@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import { assets } from "../assets/assets.js";
@@ -17,7 +17,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user")
 
-  const { backendURL, setIsloggedin, getUserData } = useContext(AppContext);
+  const { backendURL, setIsloggedin, getUserData, getAllUserData } = useContext(AppContext);
+
+  useEffect (()=>{
+    getAllUserData()
+  },[])
 
   const onSubmitHandler = async (e) => {
     try {

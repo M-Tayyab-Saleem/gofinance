@@ -30,3 +30,17 @@ export const getAllUserData = async (req, res) => {
   }
 }
 
+//edit user
+export const editUser = async (req, res) => {
+    const id = req.params.id;
+    const updateData = req.body;
+  try {
+    const updatedUser = await User.findByIdAndUpdate(id, updateData);
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "User updated successfully", updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
