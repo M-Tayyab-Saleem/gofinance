@@ -1,40 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { assets } from "../assets/assets.js";
 import { useNavigate, useParams } from "react-router-dom";
-
-
+import { toast } from "react-toastify";
 
 const UserEdit = () => {
-  const { users, backendURL } = useContext(AppContext);
+  const { backendURL , setUsers } = useContext(AppContext);
   const { id } = useParams();
-  const user = users.filter((user)=> user._id == id)
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
 
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
-    name: user[0].name,
-    email: user[0].email
+    name: "",
+    email: "",
   });
+
+  const getUserData = async () => {
+    try {
+      const { data } = await axios.get(`${backendURL}/api/user/data/${id}`);
+      if (data.success) {
+        setUser(data.user);
+        setFormData({ name: data.user.name, email: data.user.email });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch user data");
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.put(`${backendURL}/api/user/edit/${id}`, formData);
+      const { data } = await axios.put(
+        `${backendURL}/api/user/edit/${id}`,
+        formData
+      );
+      const updatedUsers = users.map(user => 
+        user._id === id ? { ...user, ...formData } : user
+      );
+      setUsers(updatedUsers);
       toast.success(data.message);
-      navigate('/')
+      navigate("/");
     } catch (error) {
-      toast.error(data?.message);
+      toast.error(error.response?.data?.message || "Failed to update user data");
     }
   };
+
+  if (!user) return <p className="text-center mt-20">Loading...</p>;
 
   return (
     <div className="mt-[30vh]">
@@ -53,6 +77,7 @@ const UserEdit = () => {
               className="bg-transparent outline-none"
               type="text"
               placeholder="Full Name"
+              name="name"
               required
             />
           </div>
@@ -64,7 +89,8 @@ const UserEdit = () => {
               value={formData.email}
               className="bg-transparent outline-none"
               type="email"
-              placeholder="Eamil id"
+              placeholder="Email ID"
+              name="email"
               required
             />
           </div>

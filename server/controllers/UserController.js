@@ -7,12 +7,8 @@ export const getUserData = async (req, res) => {
     if (!user) {
       return res.status(400).json({  message: "User does not exist" });
     } 
-    res.status(200).json({ success: true , userData: {
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isAccountVerified: user.isAccountVerified
-        }});
+    res.status(200).json({ success: true ,user})
+        
 } catch (error) {   
     res.status(500).json({ message: error.message });
   }
@@ -43,4 +39,33 @@ export const editUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+//get Any User
+export const getAnyUserData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);  
+    if (!user) {
+      return res.status(400).json({  message: "User does not exist" });
+    } 
+    res.status(200).json({ success: true ,user})
+        
+} catch (error) {   
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//delete user
+export const deleteUser = async (req, res) => {
+  const id = req.params.id;
+try {
+  const deleteddUser = await User.findByIdAndDelete(id)
+  if (!deleteddUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  return res.status(200).json({ message: "User deleted successfully" });
+} catch (error) {
+  res.status(500).json({ message: error.message });
+}
 };

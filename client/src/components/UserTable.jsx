@@ -1,50 +1,55 @@
-import * as React from 'react';
+import * as React  from "react";
 import { AppContext } from "../context/AppContext";
 import { useContext } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { useEffect } from "react";
+import { toast } from 'react-toastify';
+import { useState } from "react";
 
 
 export default function DataTable() {
-     const { users } = useContext(AppContext);
-     const navigate = useNavigate()
+  const { users, backendURL} = useContext(AppContext);
+  const navigate = useNavigate();
 
-     const edithandler = ()=>{
-      
-     }
-     
+  const edithandler = () => {};
+
+
   return (
-    <div className="container mx-auto p-4">
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-200 text-white">
-          <tr>
-            <th className="py-3 px-6 text-left">Name</th>
-            <th className="py-3 px-6 text-left">Email</th>
-            <th className="py-3 px-6 text-left">Role</th>
-            <th className="py-3 px-6 text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {users.map((user) => (
-            <tr key={user._id} className="border-b hover:bg-gray-100">
-              <td className="py-3 px-6">{user.name}</td>
-              <td className="py-3 px-6">{user.email}</td>
-              <td className="py-3 px-6">{user.role}</td>
-              <td className="py-3 px-6 flex justify-center space-x-3">
-                <button className="text-blue-500 hover:text-blue-700">
-                 <Link to={`/edit/${user._id}`}><Pencil size={18} /></Link>
-                </button>
-                <button className="text-red-500 hover:text-red-700">
-                  <Trash2 size={18} />
-                </button>
-              </td>
-            </tr>
+            <TableRow key={user._id}>
+              <TableCell>{user._id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <Button onClick={() => navigate(`/edit/${user._id}`)}>
+                  Edit
+                </Button>
+                <Button>Delete</Button>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

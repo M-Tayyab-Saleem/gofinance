@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import UserTable from "../components/UserTable";
 import SearchBar from "../components/SearchBar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Badge from "@mui/material/Badge";
 import { AppContext } from "../context/AppContext";
+
 
 import {
   LayoutGrid,
@@ -14,7 +15,6 @@ import {
   CreditCard,
   Settings,
   HelpCircle,
-  ChevronDown,
 } from "lucide-react";
 
 
@@ -30,8 +30,8 @@ const menuItems = [
 ];
 
 const Home = () => {
+    const { userData }  = useContext(AppContext);
 
-  const { userData }  = useContext(AppContext);
   
   return (
     <div className="flex min-h-screen bg-gray-50 ">
